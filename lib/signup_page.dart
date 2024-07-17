@@ -50,6 +50,7 @@ class _SignupPageState extends State<SignupPage> {
    });
   }
   */
+  
   String role="Customer";
   String default_status="Approved";
   
@@ -75,7 +76,14 @@ class _SignupPageState extends State<SignupPage> {
      }); 
     var respond =jsonDecode(response.body);
     if(respond["success"]=="true"){
-      print("Success");
+       Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (BuildContext context) {
+                return const CusHomepage();
+              },
+            ),
+          );
+      
     }
     else{
       print("failed");

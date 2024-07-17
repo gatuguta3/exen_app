@@ -1,7 +1,10 @@
 // ignore: unused_import
+import 'dart:convert';
+
 import 'package:exen_app/signup_page.dart';
 import 'package:flutter/material.dart';
 import 'package:exen_app/customer/cus_homepage.dart';
+import 'package:http/http.dart' as http;
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -11,7 +14,14 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+
   bool _passwordVisible = false;
+
+  TextEditingController email=TextEditingController();
+  TextEditingController password=TextEditingController();
+  String msg="";
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,6 +93,7 @@ class _LoginPageState extends State<LoginPage> {
                                         bottom:
                                             BorderSide(color: Colors.grey))),
                                 child: TextField(
+                                  controller: email,
                                   decoration: InputDecoration(
                                       suffixIcon: Icon(Icons.email),
                                       hintText: "Somebody@gmail.com",
@@ -97,6 +108,7 @@ class _LoginPageState extends State<LoginPage> {
                                         bottom:
                                             BorderSide(color: Colors.grey))),
                                 child: TextField(
+                                  controller: password,
                                   obscureText: _passwordVisible,
                                   decoration: InputDecoration(
                                       hintText: "Password",
@@ -118,22 +130,18 @@ class _LoginPageState extends State<LoginPage> {
                             ],
                           ),
                         ),
+
+
                         SizedBox(height: 30.0),
                         Text(
-                          "Forgot Password ?",
+                          msg,
                           style: TextStyle(color: Colors.black38, fontSize: 16),
                         ),
                         SizedBox(height: 20.0),
                         ListTile(
                           title: TextButton(
                             onPressed: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (BuildContext context) {
-                                    return const CusHomepage();
-                                  },
-                                ),
-                              );
+                              login();
                             },
                             child: Text('Login',
                                 style: TextStyle(
@@ -165,5 +173,28 @@ class _LoginPageState extends State<LoginPage> {
         child: const Text('sign up'),
       ),
     );
+  }
+
+  void login() async{
+   String url= "http://10.0.2.2/Exen_Limited/Api/Login.php";
+
+    final Map<String, dynamic> queryParams ={
+        "email": email.text,
+        "password": password.text,
+    };
+      try{
+        http.Response response = await http.get(Uri.parse(url).replace(queryParameters: queryParams));
+        if(response.statusCode ==200){
+          var user = jsonDecode(response.body);
+
+          print(response.body);
+         
+        }
+
+      }catch(error){
+          print("invalid username and password");
+          
+      }
+
   }
 }
