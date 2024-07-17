@@ -1,11 +1,15 @@
 import 'dart:convert';
 
 import 'package:exen_app/Others/driver.dart';
+import 'package:exen_app/interior_designer/designer_homepage.dart';
+import 'package:exen_app/inventory_manager/inventory_home.dart';
 import 'package:exen_app/login_page.dart';
+import 'package:exen_app/superuser/superuser_homepage.dart';
 import 'package:flutter/material.dart';
 // ignore: unused_import
 import 'customer/cus_homepage.dart';
 import 'package:http/http.dart' as http;
+import 'package:uuid/uuid.dart';
 
 
 class SignupPage extends StatefulWidget {
@@ -26,6 +30,10 @@ class _SignupPageState extends State<SignupPage> {
   TextEditingController phone=TextEditingController();
    TextEditingController idnumber=TextEditingController();
 
+ /* var uuid = Uuid();
+   Uuid get Id => uuid;
+  
+
   String? _phoneNumber;
    DateTime _selectedDate = DateTime.now();
 
@@ -37,32 +45,40 @@ class _SignupPageState extends State<SignupPage> {
       lastDate: DateTime(2025),
     );
     if (picked != null && picked != _selectedDate)
-      setState(() {
-        _selectedDate = picked;
-      });
+    setState(() {
+    _selectedDate = picked;
+   });
   }
+  */
   String role="Customer";
   String default_status="Approved";
+  
   
 
  Future<void> insertuser() async
  {
-  if(email.text !="" || password.text !=""){
-    try{
+  
+  if(email !="" || password !="" || location !=""  || phone !=""  || idnumber.text !=""  || firstname.text !=""  || lastname.text !=""){
+    
+        //String rawInput = email.text;
+       // String sanitizedInput = rawInput.replaceAll(RegExp(r'<[^>]*>'), '');
       String url= "http://10.0.2.2/Exen_Limited/Api/signup.php";
-      var res= await http.post(Uri.parse(url),body: {
+      var response= await http.post(Uri.parse(url),body: {
         "email":email.text,
         "password":password.text,
-     });
- var response= jsonDecode(res.body);
-  if(response["success"]=="true"){
-    print('User added');
-  }
-  else{
-    print('failed to register user');
-  }
-    }catch(e){
-      print(e);
+        "location":location.text,       
+        "phone":phone.text,
+        "idnumber":idnumber.text,
+        "firstname":firstname.text,
+        "lastname":lastname.text,
+
+     }); 
+    var respond =jsonDecode(response.body);
+    if(respond["success"]=="true"){
+      print("Success");
+    }
+    else{
+      print("failed");
     }
   }
   else{
@@ -135,7 +151,8 @@ class _SignupPageState extends State<SignupPage> {
                               ]),
                           child:SingleChildScrollView(
                             child:  Column(
-                            children: <Widget>[
+                            children: [
+
                               Container(
                                 padding: EdgeInsets.all(10),
                                 decoration: BoxDecoration(
@@ -225,13 +242,7 @@ class _SignupPageState extends State<SignupPage> {
                                 ),
                               ),
                                                                  
-                                     const Text('Date fo birth'),
-                                        Container(                                
-                                        padding: EdgeInsets.all(10),                                                                               
-                                         child:  ElevatedButton(
-                                          onPressed: () => _selectDate(context ),                                         
-                                          child:Icon(Icons.date_range ),                                      ),
-                                          ),                              
+                                                                
                                
                                
                               Container(
@@ -319,7 +330,7 @@ class _SignupPageState extends State<SignupPage> {
           Navigator.of(context).push(
             MaterialPageRoute(
               builder: (BuildContext context) {
-                return const Driver();
+                return const SuperuserHomepage();
               },
             ),
           );

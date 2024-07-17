@@ -1,24 +1,28 @@
+import 'package:exen_app/emp_profile/Profile.dart';
 import 'package:exen_app/login_page.dart';
 import 'package:flutter/material.dart';
 
-class Supervisor extends StatefulWidget {
-  const Supervisor({super.key});
+class Home extends StatefulWidget {
+  const Home({super.key});
 
   @override
-  State<Supervisor> createState() => _SupervisorState();
+  State<Home> createState() => _HomeState();
 }
 
-class _SupervisorState extends State<Supervisor> {
+class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(' Supervisor name', style: TextStyle(color: Colors.white) ,),
-        backgroundColor: Color.fromARGB(255, 2, 2, 2),
         automaticallyImplyLeading: false,
+        title: const Text(
+          'Finance manager name',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Colors.black,        
       ),
 
-       endDrawer: Drawer(
+    endDrawer: Drawer(
         child: ListView(
           children: [
             Container(
@@ -27,7 +31,7 @@ class _SupervisorState extends State<Supervisor> {
                 color: Colors.black,
               ),
               child: const UserAccountsDrawerHeader(
-                accountName: Text('Supervisor id '),
+                accountName: Text('Designer Id '),
                 accountEmail: Text('user@gmail.com'),
                 currentAccountPicture: CircleAvatar(
                   backgroundImage: AssetImage('images/student1.jpeg'),
@@ -37,7 +41,13 @@ class _SupervisorState extends State<Supervisor> {
             ListTile(
               title: TextButton(
                 onPressed: () {
-                  Navigator.push(context, _ProfilePage());
+                   Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (BuildContext context) {
+                                  return const Profile();
+                                },
+                              ),
+                            );
                 },
                 child: const Text('Profile'),
               ),
@@ -45,30 +55,26 @@ class _SupervisorState extends State<Supervisor> {
             ),
 
             const Divider(thickness: 2,),
-
             ListTile(
               title: TextButton(
                 onPressed: () {
-                 Navigator.push(context, _PastProjects());
+                   Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (BuildContext context) {
+                                  return const Profile();
+                                },
+                              ),
+                            );
                 },
-                child: const Text('Past Projects'),
+                child: const Text('Transactions'),
               ),
-              leading: const Icon(Icons.construction),
+              leading: const Icon(Icons.payments),
             ),
-              ListTile(
-              title: TextButton(
-                onPressed: () {
-                 Navigator.push(context, _ServiceHistory());
-                },
-                child: const Text('Service history'),
-              ),
-              leading: const Icon(Icons.history),
-            ),
-
 
             const Divider(thickness: 2,),
-            
-            ListTile(
+
+
+             ListTile(
               title: TextButton(
                 onPressed: () {
                   showDialog<String>(
@@ -111,54 +117,3 @@ class _SupervisorState extends State<Supervisor> {
   }
 }
 
-class _ProfilePage extends MaterialPageRoute<void> {
-  _ProfilePage()
-      : super(builder: (BuildContext context) {
-          return Scaffold(
-            appBar: AppBar(
-              title: const Text(
-                'Profile',
-                style:
-                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-              ),
-              backgroundColor: Colors.black,
-              elevation: 1.0,
-            ),
-          );
-        });
-}
-
-class _ServiceHistory extends MaterialPageRoute<void> {
-  _ServiceHistory()
-      : super(builder: (BuildContext context) {
-          return Scaffold(
-            appBar: AppBar(
-              title: const Text(
-                'Services',
-                style:
-                    TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
-              ),
-             backgroundColor: Color.fromARGB(255, 250, 239, 203),
-              elevation: 1.0,
-            ),
-          );
-        });
-}
-
-class _PastProjects extends MaterialPageRoute<void> {
-  _PastProjects()
-      : super(builder: (BuildContext context) {
-          return Scaffold(
-            appBar: AppBar(
-              title: const Text(
-                'Projects',
-                style:
-                    TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
-              ),              
-              elevation: 1.0,
-              backgroundColor: Color.fromARGB(255, 250, 239, 203),
-            ),
-            
-          );
-        });
-}

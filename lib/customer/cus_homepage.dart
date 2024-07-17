@@ -1,4 +1,5 @@
 // ignore: unused_import
+import 'dart:developer';
 import 'dart:math';
 
 import 'package:exen_app/customer/cus_about_us.dart';
@@ -8,7 +9,7 @@ import 'package:exen_app/customer/cus_feedback.dart';
 import 'package:exen_app/customer/cus_orderspage.dart';
 import 'package:exen_app/customer/cus_past_services.dart';
 import 'package:exen_app/customer/cus_paymentpage.dart';
-import 'package:exen_app/customer/cus_servicespage.dart';
+import 'package:exen_app/customer/services_list.dart';
 import 'package:exen_app/login_page.dart';
 import 'package:flutter/material.dart';
 import 'cus_profilepage.dart';
@@ -92,6 +93,25 @@ Future products () async{
             const Divider(
               thickness: 4,
             ),
+                ListTile(
+              title: TextButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (BuildContext context) {
+                        return  const ServicesList();
+                      },
+                    ),
+                  );
+                },
+                child: const Text('Book a service'),
+              ),
+              leading: const Icon(Icons.money_outlined),
+            ),
+
+            const Divider(
+              thickness: 4,
+            ),
             ListTile(
               title: TextButton(
                 onPressed: () {
@@ -118,7 +138,7 @@ Future products () async{
                     ),
                   );
                 },
-                child: const Text('Services'),
+                child: const Text('Service history'),
               ),
               leading: const Icon(Icons.front_hand_outlined),
             ),
@@ -227,221 +247,13 @@ Future products () async{
         ),
       ),      
       
-      body: SingleChildScrollView(child: Column(
+      body: SingleChildScrollView(
+        child: Column(
         children: [
            const SizedBox(
               height: 20,
             ),
             
-            Container(
-              child: const Text('Services',
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold)),
-            ),
-
-            const SizedBox(
-              height: 10,
-            ),
-                
-            Container(
-              height: 300,                         
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: [
-                  SizedBox(
-                    width: 350,
-                    height: 400,
-                    child: Card(
-                      color: Colors.white,
-                      child: Center(
-                        child: Column(
-                  children: <Widget>[
-                    SizedBox(
-                      height: 220.0,
-                      child: Stack(
-                        children: <Widget>[
-                          Positioned.fill(
-                            child: Image.asset(
-                              'images/repair.jpeg',
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          Positioned(
-                            bottom: 16.0,
-                            left: 16.0,
-                            right: 16.0,
-                            child: FittedBox(
-                              fit: BoxFit.scaleDown,
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                'Repair',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headlineSmall!
-                                    .copyWith(color: Color.fromRGBO(89, 87, 87, 1)),
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                    ButtonBar(
-                      alignment: MainAxisAlignment.end,
-                      children: <Widget>[                  
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (BuildContext context) {
-                                  return const CusServicespage();
-                                },
-                              ),
-                            );
-                          },
-                          child: const Text('BOOK NOW'),
-                        ),
-                      ],
-                    ),
-                    ],
-                    ),
-                            ),
-                          ),
-                  ),
-                 
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SizedBox(
-                    width: 350,
-                    height: 400,
-                    child: Card(
-                      color: Colors.white,
-                      child: Center(
-                        child: Column(
-                  children: <Widget>[
-                    SizedBox(
-                      height: 210.0,
-                      child: Stack(
-                        children: <Widget>[
-                          Positioned.fill(
-                            child: Image.asset(
-                              'images/applianceInstallation.jpeg',
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          Positioned(
-                            bottom: 16.0,
-                            left: 16.0,
-                            right: 16.0,
-                            child: FittedBox(
-                              fit: BoxFit.scaleDown,
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                'Installation',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headlineSmall!
-                                    .copyWith(color: Colors.white),
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                    ButtonBar(
-                      alignment: MainAxisAlignment.end,
-                      children: <Widget>[                    
-                        TextButton(
-                          onPressed: () {
-                             Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (BuildContext context) {
-                                  return const CusServicespage();
-                                },
-                              ),
-                            );
-                          },
-                          child: const Text('BOOK NOW'),
-                        ),
-                      ],
-                    ),
-                    ],
-                    ),
-                            ),
-                          ),
-                  ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SizedBox(
-                    width: 350,
-                    height: 400,
-                    child: Card(
-                      color: Colors.white,
-                      child: Center(
-                        child: Column(
-                  children: <Widget>[
-                    SizedBox(
-                      height: 210.0,
-                      child: Stack(
-                        children: <Widget>[
-                          Positioned.fill(
-                            child: Image.asset(
-                              'images/consultations.jpeg',
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          Positioned(
-                            bottom: 16.0,
-                            left: 16.0,
-                            right: 16.0,
-                            child: FittedBox(
-                              fit: BoxFit.scaleDown,
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                'Consultations',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headlineSmall!
-                                    .copyWith(color: Colors.white),
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                    ButtonBar(
-                      alignment: MainAxisAlignment.end,
-                      children: <Widget>[                        
-                        TextButton(
-                          onPressed: () {
-                             Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (BuildContext context) {
-                                  return const CusServicespage();
-                                },
-                              ),
-                            );
-                          },
-                          child: const Text('BOOK NOW'),
-                        ),
-                      ],
-                    ),
-                    ],
-                    ),
-                            ),
-                          ),
-                  ),
-                  ),
-                ],
-              ),
-            ),
-
-             const SizedBox(
-              height: 20,
-            ),
-
              Container(
               child: const Text('Products',
                   style: TextStyle(
@@ -460,13 +272,12 @@ Future products () async{
                 labelText: 'search product by name',
               ),
             ),
-            ),          
-
+            ),  
              const SizedBox(
               height: 4,
             ),
-
-            ElevatedButton(onPressed: (){}, child: const Text('All')),
+            
+                      
        
             
         ],

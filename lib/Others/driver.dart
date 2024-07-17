@@ -100,7 +100,7 @@ class _DriverState extends State<Driver> {
 
 class _ProfilePage extends MaterialPageRoute<void> {
   _ProfilePage()
-      : super(builder: (BuildContext) {
+      : super(builder: (BuildContext context) {
           return Scaffold(
             appBar: AppBar(
               title: const Text(
@@ -117,7 +117,7 @@ class _ProfilePage extends MaterialPageRoute<void> {
 
 class _MyDeliveries extends MaterialPageRoute<void> {
   _MyDeliveries()
-      : super(builder: (BuildContext) {
+      : super(builder: (BuildContext context) {
           return Scaffold(
             appBar: AppBar(
               title: const Text(
@@ -127,6 +127,14 @@ class _MyDeliveries extends MaterialPageRoute<void> {
               ),
               backgroundColor: Colors.black,
               elevation: 1.0,
+              automaticallyImplyLeading: false,
+            ),
+            body: SingleChildScrollView(
+              child: Column(
+                children: [
+                  TextButton(onPressed: () { Navigator.push(context, _MyDeliveries());} , child: Text('home'))
+                ],
+              ),
             ),
           );
         });

@@ -7,6 +7,7 @@ class CusCart extends StatefulWidget {
 
   @override
   State<CusCart> createState() => _CusCartState();
+  
 }
 
 class _CusCartState extends State<CusCart> {
@@ -23,15 +24,11 @@ Future<void> getproducts() async {
   }catch(e){print(e);}
 }
 
-@override
- void iniState(){
-  getproducts();
-  super.initState();
- }
+
 
   @override
   Widget build(BuildContext context) {
-    const text = const Text(
+    const text =  Text(
       'Cart',
       style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
     );
@@ -46,7 +43,7 @@ Future<void> getproducts() async {
             itemCount: productdata.length,
             itemBuilder: (context, index) {
               return Card(
-                  margin: EdgeInsets.all(10),                                  
+                  margin: const EdgeInsets.all(10),                                  
                   child: ListTile(                   
                   title: Text(productdata[index]["Product_Id"]),
                   subtitle: Text(productdata[index]["Product_Name"]),
@@ -69,4 +66,6 @@ Future<void> getproducts() async {
       
     );
   }
+
+
 }

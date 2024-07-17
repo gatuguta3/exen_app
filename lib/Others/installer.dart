@@ -96,22 +96,6 @@ class _InstallerState extends State<Installer> {
   }
 }
 
-class _ProfilePage extends MaterialPageRoute<void> {
-  _ProfilePage()
-      : super(builder: (BuildContext) {
-          return Scaffold(
-            appBar: AppBar(
-              title: const Text(
-                'Profile',
-                style:
-                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-              ),
-              backgroundColor: Colors.black,
-              elevation: 1.0,
-            ),
-          );
-        });
-}
 
 class _MyWorks extends MaterialPageRoute<void> {
   _MyWorks()
@@ -129,3 +113,25 @@ class _MyWorks extends MaterialPageRoute<void> {
           );
         });
 }
+
+
+//profile starts here
+
+class _ProfilePage extends MaterialPageRoute<void> {
+  _ProfilePage()
+      : super(builder: (BuildContext) {
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text(
+                'Profile',
+                style:
+                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              ),
+              backgroundColor: Colors.black,
+              elevation: 1.0,
+            ),
+          );
+        });
+}
+
+
