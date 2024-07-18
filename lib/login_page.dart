@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 import 'package:exen_app/signup_page.dart';
+import 'package:exen_app/superuser/superuser_homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:exen_app/customer/cus_homepage.dart';
 import 'package:http/http.dart' as http;
@@ -16,10 +17,102 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
 
   bool _passwordVisible = false;
+  
 
-  TextEditingController email=TextEditingController();
-  TextEditingController password=TextEditingController();
-  String msg="";
+final _formKey = GlobalKey<FormState>();
+  late String email, password;
+
+   Future<void> _login() async {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+
+      final response = await http.post(
+        Uri.parse('http://10.0.2.2/Exen_Limited/Api/Login.php'),
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: {
+          'email': email,
+          'password': password,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(response.body);
+        final role = jsonData['User_Role'];
+         if (role == 'Customer') {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (BuildContext context) {
+                return const CusHomepage();
+              },
+            ),
+          );
+          
+        } else if (role == 'Inventory manager') {
+          
+        }
+        else if (role == 'Finance manager') {
+          
+        }
+         else if (role == 'Dispatch manager') {
+          
+        }
+         else if (role == 'Service manager') {
+          
+        }
+         else if (role == 'Driver') {
+          
+        }
+         else if (role == 'Interior designer') {
+          
+        }
+         else if (role == 'Installer') {
+          
+        }
+         else if (role == 'Supervisor') {
+          
+        }
+         else if (role == 'Supplier') {
+          
+        }
+         else if (role == 'Superuser') {
+          
+        }
+        
+      } else {
+         showDialog<String>(
+                    context: context,
+                    builder: (BuildContext context) => AlertDialog(
+                      title: const Text('Error'),
+                      content: const Text(
+                        'Invalid Username or password please try again or sign up ?', style: TextStyle(color: Colors.red,fontWeight: FontWeight.bold),
+                      ),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () => Navigator.pop(context, 'Cancel'),
+                          child: const Text('Try again'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (BuildContext context) {
+                                  return const SignupPage();
+                                },
+                              ),
+                            );
+                          },
+                          child: const Text('Sign up'),
+                        ),
+                      ],
+                    ),
+        );
+      }
+    }
+  }
+
+
 
 
   @override
@@ -67,7 +160,9 @@ class _LoginPageState extends State<LoginPage> {
                         topLeft: Radius.circular(60),
                         topRight: Radius.circular(60))),
                 child: SingleChildScrollView(
-                  child: Padding(
+                  child:Form(
+                    key: _formKey,
+                    child:Padding(
                     padding: EdgeInsets.all(30),
                     child: Column(
                       children: <Widget>[
@@ -92,13 +187,21 @@ class _LoginPageState extends State<LoginPage> {
                                     border: Border(
                                         bottom:
                                             BorderSide(color: Colors.grey))),
-                                child: TextField(
-                                  controller: email,
+                                child: TextFormField(
+                                  
                                   decoration: InputDecoration(
                                       suffixIcon: Icon(Icons.email),
                                       hintText: "Somebody@gmail.com",
                                       hintStyle: TextStyle(color: Colors.grey),
                                       border: InputBorder.none),
+
+                                      validator: (value) {
+                                        if (value!.isEmpty) {
+                                          return 'Please enter your email';
+                                        }
+                                        return null;
+                                      },
+                                      onSaved: (value) => email = value! ,
                                 ),
                               ),
                               Container(
@@ -107,8 +210,7 @@ class _LoginPageState extends State<LoginPage> {
                                     border: Border(
                                         bottom:
                                             BorderSide(color: Colors.grey))),
-                                child: TextField(
-                                  controller: password,
+                                child: TextFormField(                                  
                                   obscureText: _passwordVisible,
                                   decoration: InputDecoration(
                                       hintText: "Password",
@@ -125,6 +227,13 @@ class _LoginPageState extends State<LoginPage> {
                                       ),
                                       hintStyle: TextStyle(color: Colors.grey),
                                       border: InputBorder.none),
+                                        validator: (value) {
+                                      if (value!.isEmpty) {
+                                        return 'Please enter your password';
+                                      }
+                                      return null;
+                                    },
+                                    onSaved: (value) => password = value!,
                                 ),
                               ),
                             ],
@@ -133,15 +242,12 @@ class _LoginPageState extends State<LoginPage> {
 
 
                         SizedBox(height: 30.0),
-                        Text(
-                          msg,
-                          style: TextStyle(color: Colors.black38, fontSize: 16),
-                        ),
+                        
                         SizedBox(height: 20.0),
                         ListTile(
                           title: TextButton(
                             onPressed: () {
-                              login();
+                              _login();
                             },
                             child: Text('Login',
                                 style: TextStyle(
@@ -154,6 +260,8 @@ class _LoginPageState extends State<LoginPage> {
                       ],
                     ),
                   ),
+                    
+                    )
                 ),
               ),
             )
@@ -175,26 +283,4 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  void login() async{
-   String url= "http://10.0.2.2/Exen_Limited/Api/Login.php";
-
-    final Map<String, dynamic> queryParams ={
-        "email": email.text,
-        "password": password.text,
-    };
-      try{
-        http.Response response = await http.get(Uri.parse(url).replace(queryParameters: queryParams));
-        if(response.statusCode ==200){
-          var user = jsonDecode(response.body);
-
-          print(response.body);
-         
-        }
-
-      }catch(error){
-          print("invalid username and password");
-          
-      }
-
   }
-}

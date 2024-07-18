@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'customer/cus_homepage.dart';
 import 'package:http/http.dart' as http;
 import 'package:uuid/uuid.dart';
+// ignore: depend_on_referenced_packages
 
 
 class SignupPage extends StatefulWidget {
@@ -21,14 +22,6 @@ class SignupPage extends StatefulWidget {
 
 class _SignupPageState extends State<SignupPage> {
   bool _passwordVisible = false;  
-
-  TextEditingController email=TextEditingController();  
-  TextEditingController password=TextEditingController();
-  TextEditingController firstname=TextEditingController();
-  TextEditingController lastname=TextEditingController();
-  TextEditingController location=TextEditingController();
-  TextEditingController phone=TextEditingController();
-   TextEditingController idnumber=TextEditingController();
 
  /* var uuid = Uuid();
    Uuid get Id => uuid;
@@ -56,7 +49,7 @@ class _SignupPageState extends State<SignupPage> {
   
   
 
- Future<void> insertuser() async
+ /*  Future<void> insertuser() async
  {
   
   if(email !="" || password !="" || location !=""  || phone !=""  || idnumber.text !=""  || firstname.text !=""  || lastname.text !=""){
@@ -94,6 +87,58 @@ class _SignupPageState extends State<SignupPage> {
   }
  }
   
+*/
+
+final _formKey = GlobalKey<FormState>();
+  late String firstname, lastname, location, phone, idnumber, email, password,confirmPassword;
+  
+
+   Future<void> insertuser() async {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      final response = await http.post(
+        Uri.parse('http://10.0.2.2/Exen_Limited/Api/signup.php'),
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: {
+          'firstname': firstname,
+          'lastname': lastname,
+          'location': location,
+          'phone': phone,
+          'idnumber': idnumber,
+          'email': email,
+          'password': password,
+          'confirm_password': confirmPassword,          
+        },
+      );
+       if (response.statusCode == 200) {
+        final jsonData = jsonDecode(response.body);
+        if (jsonData['success']) {
+          // Sign up successful, navigate to login page
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (BuildContext context) {
+                return const LoginPage();
+              },
+            ),
+          );
+          
+        } else {
+          // Sign up failed, show error message
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(jsonData['message'])),
+          );
+        }
+      } else {
+        // Error occurred, show error message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error occurred, please try again')),
+        );
+      }
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -158,22 +203,30 @@ class _SignupPageState extends State<SignupPage> {
                                     offset: Offset(0, 10))
                               ]),
                           child:SingleChildScrollView(
-                            child:  Column(
-                            children: [
+                            child: Form(
+                              key: _formKey,
 
+                              child:Column(
+                            children: [
                               Container(
                                 padding: EdgeInsets.all(10),
                                 decoration: BoxDecoration(
                                     border: Border(
                                         bottom:
                                             BorderSide(color: Colors.grey))),
-                                child: TextField(
-                                  controller: email,
+                                child: TextFormField(                                  
                                   decoration: InputDecoration(
                                       suffixIcon: Icon(Icons.email),
                                       hintText: "Somebody@gmail.com",
                                       hintStyle: TextStyle(color: Colors.grey),
                                       border: InputBorder.none),
+                                       validator: (value) {
+                                      if (value!.isEmpty || !value.contains('@')) {
+                                        return 'Please enter a valid email';
+                                      }
+                                      return null;
+                                    },
+                                    onSaved: (value) => email = value!,
                                 ),
                               ),  
 
@@ -183,33 +236,45 @@ class _SignupPageState extends State<SignupPage> {
                                     border: Border(
                                         bottom:
                                             BorderSide(color: Colors.grey))),
-                                child: TextField(
-                                  controller: firstname,
+                                child: TextFormField(                                 
                                   decoration: InputDecoration(
                                       suffixIcon: Icon(Icons.person_2),
                                       hintText: "Firstname",
                                       hintStyle: TextStyle(color: Colors.grey),
                                       border: InputBorder.none),
+                                       validator: (value) {
+                                        if (value!.isEmpty) {
+                                          return 'Please enter your name';
+                                        }
+                                        return null;
+                                      },
+                                      onSaved: (value) => firstname = value!,
                                 ),
                               ),
-                               Container(
-                                
+
+                               Container(                                
                                 padding: EdgeInsets.all(10),
                                 decoration: BoxDecoration(
                                     border: Border(
                                         bottom:
                                             BorderSide(color: Colors.grey))),
-                                child: TextField(
-                                  controller: lastname,
+                                child: TextFormField(                                  
                                   decoration: InputDecoration(
                                       suffixIcon: Icon(Icons.person_2),
                                       hintText: "Lastname",
                                       hintStyle: TextStyle(color: Colors.grey),
                                       border: InputBorder.none),
+                                       validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return 'Please enter your name';
+                                  }
+                                  return null;
+                                },
+                                onSaved: (value) => lastname = value!,
                                 ),
                               ),
                                TextFormField(
-                                controller: phone,
+                              
                                 decoration: const InputDecoration(
                                   border: UnderlineInputBorder(),
                                   filled: true,
@@ -218,6 +283,13 @@ class _SignupPageState extends State<SignupPage> {
                                   labelText: 'Phone Number *',                                 
                                 ),
                                 keyboardType: TextInputType.phone,
+                                 validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return 'Please enter your phone number';
+                                    }
+                                    return null;
+                                  },
+                                  onSaved: (value) => phone = value!,
                                 ),
                                 Container(
                                 padding: EdgeInsets.all(10),
@@ -225,13 +297,20 @@ class _SignupPageState extends State<SignupPage> {
                                     border: Border(
                                         bottom:
                                             BorderSide(color: Colors.grey))),
-                                child: TextField(
-                                  controller: location,
+                                child: TextFormField(
+                                  
                                   decoration: InputDecoration(
                                       suffixIcon: Icon(Icons.location_pin),
                                       hintText: "Location",
                                       hintStyle: TextStyle(color: Colors.grey),
                                       border: InputBorder.none),
+                                       validator: (value) {
+                                      if (value!.isEmpty) {
+                                        return 'Please enter your location';
+                                      }
+                                      return null;
+                                    },
+                                    onSaved: (value) => location = value!,
                                 ),
                               ),
                               Container(
@@ -240,29 +319,38 @@ class _SignupPageState extends State<SignupPage> {
                                     border: Border(
                                         bottom:
                                             BorderSide(color: Colors.grey))),
-                                child: TextField(
-                                  controller: idnumber,
+                                child: TextFormField(
+                                  
                                   decoration: InputDecoration(
                                       suffixIcon: Icon(Icons.perm_identity),
                                       hintText: "National Id Number",
                                       hintStyle: TextStyle(color: Colors.grey),
                                       border: InputBorder.none),
+                                       validator: (value) {
+                                        if (value!.isEmpty) {
+                                          return 'Please enter your id number';
+                                        }
+                                        return null;
+                                      },
+                                      onSaved: (value) => idnumber = value!,
                                 ),
                               ),
-                                                                 
-                                                                
-                               
-                               
+                              
                               Container(
                                 padding: EdgeInsets.all(10),
                                 decoration: BoxDecoration(
                                     border: Border(
                                         bottom:
                                             BorderSide(color: Colors.grey))),
-                                child: TextField(
-                                  controller: password,
+                                child: TextFormField(                                  
                                   obscureText: _passwordVisible,
-                                  
+                                  validator: (value) {
+                                    if (value!.isEmpty || value.length < 8) {
+                                      return 'Please enter a password with at least 8 characters';
+                                    }
+                                    return null;
+                                  },
+                                  onSaved: (value) => password = value! ,
                                   decoration: InputDecoration(
                                     
                                       hintText: "Password",
@@ -277,18 +365,27 @@ class _SignupPageState extends State<SignupPage> {
                                           });
                                         },
                                       ),
+                                         
+                                  
                                       hintStyle: TextStyle(color: Colors.grey),
                                       border: InputBorder.none),
                                 ),
                               ),
+
                               Container(
                                 padding: EdgeInsets.all(10),
                                 decoration: BoxDecoration(
                                     border: Border(
                                         bottom:
                                             BorderSide(color: Colors.grey))),
-                                child: TextField(
-                                  
+                                child: TextFormField(
+                                   validator: (value) {
+                                    if (value!.isEmpty || value != password) {
+                                      return 'Please enter the same password';
+                                    }
+                                    return null;
+                                  },
+                                  onSaved: (value) => confirmPassword = value!,
                                   obscureText: _passwordVisible,
                                   decoration: InputDecoration(
                                       hintText: " Confirm Password",
@@ -309,13 +406,16 @@ class _SignupPageState extends State<SignupPage> {
                               ),
                             ],
                           ),
-                     ) ),
+                     
+                               )
+
+                            
+                            ),
+                      ),
                         SizedBox(height: 20.0),
                         ListTile(
                           title: TextButton(
-                            onPressed: () {
-                              insertuser();                              
-                            },
+                            onPressed: insertuser,
                             child: Text('Sign up',
                                 style: TextStyle(
                                     color: Colors.black,
@@ -348,3 +448,5 @@ class _SignupPageState extends State<SignupPage> {
     );
   }
 }
+
+

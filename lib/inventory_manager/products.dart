@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class Products extends StatefulWidget {
   const Products({super.key});
@@ -8,6 +11,21 @@ class Products extends StatefulWidget {
 }
 
 class _ProductsState extends State<Products> {
+
+   List<dynamic> _data = [];
+
+  Future<void> _fetchData() async {
+    final response = await http.get(Uri.parse('http://10.0.2.2/Exen_Limited/Api/Products.php'));
+
+    if (response.statusCode == 200) {
+      setState(() {
+        _data = jsonDecode(response.body);
+      });
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,6 +39,39 @@ class _ProductsState extends State<Products> {
               elevation: 1.0,
             ),
 
+         body: Center(
+          child: Column(                      
+            children: [         
+             Container(
+                padding: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  border: Border(bottom: BorderSide(color: Colors.grey)),
+                ),
+                child: Text('Product List', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              ),
+              SizedBox(height: 20),
+              _data.length > 0
+              ? DataTable(                
+                columns:  [
+                DataColumn(label: Text('Product Id')),
+              ],                
+
+               rows: _data
+                          .map(
+                            (data) => DataRow(
+                              cells: [
+                                DataCell(Text(data['Product_Id'].toString())),
+                                
+                              ],
+                            ),
+                          )
+                          .toList(),
+                    )
+                  : Text('No data found'),
+            ],
+          ),
+         ),
+
 
 
 
@@ -32,6 +83,13 @@ class _ProductsState extends State<Products> {
         child: const Icon(Icons.add),
       ),
     );
+  }
+   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _fetchData() ; 
+    });
   }
 }
 
