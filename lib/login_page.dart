@@ -1,12 +1,22 @@
 // ignore: unused_import
 import 'dart:convert';
 
+import 'package:exen_app/Others/dispatch_manager.dart';
+import 'package:exen_app/Others/driver.dart';
+import 'package:exen_app/Others/installer.dart';
+import 'package:exen_app/Others/supervisor.dart';
+import 'package:exen_app/Others/supplier.dart';
+import 'package:exen_app/finance_manager/home.dart';
+import 'package:exen_app/interior_designer/designer_homepage.dart';
+import 'package:exen_app/inventory_manager/inventory_home.dart';
+import 'package:exen_app/service_manager/service_home.dart';
 import 'package:exen_app/signup_page.dart';
 import 'package:exen_app/superuser/superuser_homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:exen_app/customer/cus_homepage.dart';
 import 'package:http/http.dart' as http;
-
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -39,9 +49,14 @@ final _formKey = GlobalKey<FormState>();
 
       if (response.statusCode == 200) {
         final jsonData = jsonDecode(response.body);
-        final role = jsonData['User_Role'];
+        final role = jsonData['User_Role'];   
+         final userId = jsonData['User_Id'];
+
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('user_id', userId);
+
          if (role == 'Customer') {
-          Navigator.of(context).push(
+           Navigator.of(context).push(
             MaterialPageRoute(
               builder: (BuildContext context) {
                 return const CusHomepage();
@@ -50,64 +65,92 @@ final _formKey = GlobalKey<FormState>();
           );
           
         } else if (role == 'Inventory manager') {
-          
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (BuildContext context) {
+                return const InventoryHome();
+              },
+            ),
+          );
         }
         else if (role == 'Finance manager') {
-          
+           Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (BuildContext context) {
+                return const Home();
+              },
+            ),
+          );
         }
          else if (role == 'Dispatch manager') {
-          
+           Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (BuildContext context) {
+                return const DispatchManager();
+              },
+            ),
+          );
         }
          else if (role == 'Service manager') {
+           Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (BuildContext context) {
+                return const ServiceHome();
+              },
+            ),
+          );
           
         }
          else if (role == 'Driver') {
-          
+           Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (BuildContext context) {
+                return const Driver();
+              },
+            ),
+          );
         }
          else if (role == 'Interior designer') {
-          
+           Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (BuildContext context) {
+                return const Designer_Homepage();
+              },
+            ),
+          );
         }
          else if (role == 'Installer') {
-          
+           Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (BuildContext context) {
+                return const Installer();
+              },
+            ),
+          );
         }
          else if (role == 'Supervisor') {
-          
+            Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (BuildContext context) {
+                return const Supervisor();
+              },
+            ),
+          );
         }
          else if (role == 'Supplier') {
-          
+           Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (BuildContext context) {
+                return const Supplier();
+              },
+            ),
+          );
         }
-         else if (role == 'Superuser') {
-          
-        }
-        
-      } else {
-         showDialog<String>(
-                    context: context,
-                    builder: (BuildContext context) => AlertDialog(
-                      title: const Text('Error'),
-                      content: const Text(
-                        'Invalid Username or password please try again or sign up ?', style: TextStyle(color: Colors.red,fontWeight: FontWeight.bold),
-                      ),
-                      actions: <Widget>[
-                        TextButton(
-                          onPressed: () => Navigator.pop(context, 'Cancel'),
-                          child: const Text('Try again'),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (BuildContext context) {
-                                  return const SignupPage();
-                                },
-                              ),
-                            );
-                          },
-                          child: const Text('Sign up'),
-                        ),
-                      ],
-                    ),
-        );
+         
+      } else {        
+          // ignore: use_build_context_synchronously
+          ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: const Text('Error occurred, please try again')));
       }
     }
   }

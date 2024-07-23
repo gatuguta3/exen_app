@@ -34,7 +34,7 @@ class _HomeState extends State<Home> {
                 accountName: Text('Designer Id '),
                 accountEmail: Text('user@gmail.com'),
                 currentAccountPicture: CircleAvatar(
-                  backgroundImage: AssetImage('images/student1.jpeg'),
+                  backgroundImage: AssetImage('images/E1.png'),
                 ),
               ),
             ),

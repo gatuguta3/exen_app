@@ -30,7 +30,7 @@ class _SupervisorState extends State<Supervisor> {
                 accountName: Text('Supervisor id '),
                 accountEmail: Text('user@gmail.com'),
                 currentAccountPicture: CircleAvatar(
-                  backgroundImage: AssetImage('images/student1.jpeg'),
+                  backgroundImage: AssetImage('images/E1.png'),
                 ),
               ),
             ),

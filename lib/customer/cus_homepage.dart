@@ -10,8 +10,11 @@ import 'package:exen_app/customer/cus_orderspage.dart';
 import 'package:exen_app/customer/cus_past_services.dart';
 import 'package:exen_app/customer/cus_paymentpage.dart';
 import 'package:exen_app/customer/services_list.dart';
+import 'package:exen_app/emp_profile/Profile.dart';
 import 'package:exen_app/login_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'cus_profilepage.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -36,26 +39,125 @@ class _CusHomepageState extends State<CusHomepage> {
     'Fridges'
   ];
 
-Future products () async{
-  var url='http://10.0.2.2/Exen_Limited/Api/Products.php';
 
+   String _userNameText = 'Loading...';
+   late String userId;
+  bool _loading = true;
+  bool _error = false;
+  String _firstname = '';
+  String _lastname = '';
+  String _phonenumber = '';
+  String _location = '';
+  String _emailtext = 'loading...';
+  String _dateofbirth = '';
+  String _gender = '';
+  String _nationalidno = '';  
+   @override
+  void initState() {
+    super.initState();
+    _loadUserId();
+     _fetchUserDetails();
+         
+  }
+  
+
+  Future<void> _loadUserId() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userId = prefs.getString('user_id') ?? '';
+      if (userId.isNotEmpty) {
+        _fetchUserDetails();
+      } else {
+        _error = true;
+        _loading = false;
+      }
+    });
+  }
+
+  Future<void> _logout(BuildContext context) async {
+    // Clear user ID from SharedPreferences
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('user_id');
+
+    // Navigate back to login page
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (BuildContext context) => const LoginPage(),
+      ),
+    );
+  }
+
+  Future<void> _checkAuthentication(BuildContext context) async {
+    final prefs = await SharedPreferences.getInstance();
+    String? userId = prefs.getString('user_id');
+
+    if (userId == null) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (BuildContext context) => const LoginPage(),
+        ),
+      );
+    }
+  }
+
+   Future<void> _fetchUserDetails() async {
+   
+      final response = await http.post(
+        Uri.parse('http://10.0.2.2/Exen_Limited/Api/get_cus_details.php'),
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: {'user_id': userId},
+      );
+
+     if (response.statusCode == 200) {
+    _handleResponse(response.body);
+    print('Response data: ${response.body}');
+    
+  } else {
+   
+    print('Failed to load data');
+  }
+  }
+
+void _handleResponse(String responseBody) {
+    final Map<String, dynamic> row = jsonDecode(responseBody);
+    final String userName = row['Cust_Firstname'] ?? 'Unknown';
+    final String email = row['Email'] ;
+
+    setState(() {
+      _userNameText = userName;
+      _emailtext = email;
+      
+    });
+  }
+
+List products = [];
+Future<void> allproducts() async{
+  try{
+    String uri="http://10.0.2.2/Exen_Limited/Api/Products_cus.php";
+    var response=await http.get(Uri.parse(uri));
+  setState(() {
+    products=jsonDecode(response.body);
+  });    
+
+  }catch(e){
+    print(e);
+  }
 }
-
-
-
-
 
   
   @override
   Widget build(BuildContext context) {
-    const text = const Text(
-      'Customer name',
-      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-    );
+    
+    _checkAuthentication(context);
 
+    
     return Scaffold(
       appBar: AppBar(
-        title: text,
+        title: Text(
+      //'User ID: $userId',
+      'Welcome back $_userNameText',
+      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15),
+    ),
         automaticallyImplyLeading: false,
         backgroundColor: Colors.black,
       ),
@@ -67,9 +169,9 @@ Future products () async{
               decoration: const BoxDecoration(
                 color: Colors.black,
               ),
-              child: const UserAccountsDrawerHeader(
-                accountName: Text('Customer name'),
-                accountEmail: Text('user@gmail.com'),
+              child: UserAccountsDrawerHeader(
+                accountName: Text('$userId '),
+                accountEmail: Text('$_userNameText'),
                 currentAccountPicture: CircleAvatar(
                   backgroundImage: AssetImage('images/student1.jpeg'),
                 ),
@@ -224,15 +326,7 @@ Future products () async{
                           child: const Text('Cancel'),
                         ),
                         TextButton(
-                          onPressed: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (BuildContext context) {
-                                  return const LoginPage();
-                                },
-                              ),
-                            );
-                          },
+                          onPressed: () => _logout(context),
                           child: const Text('OK'),
                         ),
                       ],
@@ -250,7 +344,9 @@ Future products () async{
       body: SingleChildScrollView(
         child: Column(
         children: [
-           const SizedBox(
+          Column(
+            children: [
+               const SizedBox(
               height: 20,
             ),
             
@@ -276,8 +372,9 @@ Future products () async{
              const SizedBox(
               height: 4,
             ),
-            
-                      
+            ],
+          ),
+         
        
             
         ],

@@ -35,7 +35,7 @@ class _InventoryHomeState extends State<InventoryHome> {
                 accountName: Text('Inventory manager id '),
                 accountEmail: Text('user@gmail.com'),
                 currentAccountPicture: CircleAvatar(
-                  backgroundImage: AssetImage('images/student1.jpeg'),
+                  backgroundImage: AssetImage('images/E1.png'),
                 ),
               ),
             ),

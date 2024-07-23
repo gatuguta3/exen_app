@@ -90,10 +90,10 @@ class _SignupPageState extends State<SignupPage> {
 */
 
 final _formKey = GlobalKey<FormState>();
-  late String firstname, lastname, location, phone, idnumber, email, password,confirmPassword;
-  
+late String firstname, lastname, location, phone, idnumber, email, password, confirmPassword;
+   
 
-   Future<void> insertuser() async {
+   Future<void> insertuser() async {   
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       final response = await http.post(
@@ -109,7 +109,7 @@ final _formKey = GlobalKey<FormState>();
           'idnumber': idnumber,
           'email': email,
           'password': password,
-          'confirm_password': confirmPassword,          
+                   
         },
       );
        if (response.statusCode == 200) {
@@ -273,7 +273,9 @@ final _formKey = GlobalKey<FormState>();
                                 onSaved: (value) => lastname = value!,
                                 ),
                               ),
-                               TextFormField(
+
+                               Container(
+                                child: TextFormField(
                               
                                 decoration: const InputDecoration(
                                   border: UnderlineInputBorder(),
@@ -291,6 +293,9 @@ final _formKey = GlobalKey<FormState>();
                                   },
                                   onSaved: (value) => phone = value!,
                                 ),
+                               ),
+
+                                
                                 Container(
                                 padding: EdgeInsets.all(10),
                                 decoration: BoxDecoration(
@@ -313,6 +318,8 @@ final _formKey = GlobalKey<FormState>();
                                     onSaved: (value) => location = value!,
                                 ),
                               ),
+                             
+                             
                               Container(
                                 padding: EdgeInsets.all(10),
                                 decoration: BoxDecoration(
@@ -365,8 +372,7 @@ final _formKey = GlobalKey<FormState>();
                                           });
                                         },
                                       ),
-                                         
-                                  
+                                                                      
                                       hintStyle: TextStyle(color: Colors.grey),
                                       border: InputBorder.none),
                                 ),
@@ -379,13 +385,7 @@ final _formKey = GlobalKey<FormState>();
                                         bottom:
                                             BorderSide(color: Colors.grey))),
                                 child: TextFormField(
-                                   validator: (value) {
-                                    if (value!.isEmpty || value != password) {
-                                      return 'Please enter the same password';
-                                    }
-                                    return null;
-                                  },
-                                  onSaved: (value) => confirmPassword = value!,
+                                  
                                   obscureText: _passwordVisible,
                                   decoration: InputDecoration(
                                       hintText: " Confirm Password",
@@ -404,25 +404,29 @@ final _formKey = GlobalKey<FormState>();
                                       border: InputBorder.none),
                                 ),
                               ),
-                            ],
-                          ),
-                     
-                               )
-
                             
-                            ),
-                      ),
-                        SizedBox(height: 20.0),
-                        ListTile(
-                          title: TextButton(
-                            onPressed: insertuser,
+                               SizedBox(height: 20.0),
+                               ElevatedButton(
+                            onPressed: (){
+                              insertuser();
+                            },
                             child: Text('Sign up',
                                 style: TextStyle(
                                     color: Colors.black,
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold)),
                           ),
+                    
+                            ],
+                          ),
+
+                               
+                          ),
+                            
+                            ),
+                    
                         ),
+          
                         SizedBox(height: 2.0),
                       ],
                     ),
