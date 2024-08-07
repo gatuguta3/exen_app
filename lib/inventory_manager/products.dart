@@ -31,7 +31,7 @@ class _ProductsState extends State<Products> {
    
 
   Future<void> _fetchData() async {
-    final response = await http.get(Uri.parse('http://10.0.2.2/Exen_Limited/Api/Products.php'));
+    final response = await http.get(Uri.parse('https://0d28-196-216-86-68.ngrok-free.app/Exen_Limited/Api/Products.php'));
 
     if (response.statusCode == 200) {
       setState(() {

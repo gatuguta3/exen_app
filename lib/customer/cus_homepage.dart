@@ -121,7 +121,7 @@ class _CusHomepageState extends State<CusHomepage> {
 void _handleResponse(String responseBody) {
     final Map<String, dynamic> row = jsonDecode(responseBody);
     final String userName = row['Cust_Firstname'] ?? 'Unknown';
-    final String email = row['Email'] ;
+    final String email = row['Email'] ?? 'Unknown' ;
 
     setState(() {
       _userNameText = userName;
@@ -372,6 +372,43 @@ Future<void> allproducts() async{
              const SizedBox(
               height: 4,
             ),
+
+             SizedBox(
+                width: 350,
+                height: 210,
+                child: Card(
+                  margin: const EdgeInsets.all(10),
+                  child: Column(
+                    children: [
+                     const SizedBox(height: 5,),
+                      Positioned.fill(
+                            child: Image.network('https://rileyjames.co.uk/product/cda-sl400ss-single-oven/'),
+                           
+                          ),         
+
+                      SizedBox(height: 10,),                    
+                      
+                     const  Divider(thickness: 2,),
+                     const SizedBox(height: 10,),
+                      Row(
+                        children: [
+                           Text('Name  :  ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15,),),
+                            Text('In built oven'),
+                        ],
+                      ),
+                       Row(
+                        children: [
+                           Text('Price  :  ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15,),),
+                            Text('10000'),
+                        ],
+                      ),
+                      const SizedBox(height: 2,),
+                     ElevatedButton(onPressed: (){}, child: Text('View')),
+                    ],
+                  ),
+                ),
+               ),
+         
             ],
           ),
          
