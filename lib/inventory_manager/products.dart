@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:mysql1/mysql1.dart';
 import 'dart:async';
-
+import 'package:exen_app/urls.dart';
 import 'package:mysql1/mysql1.dart';
 
 class Products extends StatefulWidget {
@@ -31,7 +31,7 @@ class _ProductsState extends State<Products> {
    
 
   Future<void> _fetchData() async {
-    final response = await http.get(Uri.parse('https://0d28-196-216-86-68.ngrok-free.app/Exen_Limited/Api/Products.php'));
+    final response = await http.get(Uri.parse(APIConfig.ProductsEndpoint));
 
     if (response.statusCode == 200) {
       setState(() {

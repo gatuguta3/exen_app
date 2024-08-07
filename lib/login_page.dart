@@ -54,6 +54,7 @@ final _formKey = GlobalKey<FormState>();
 
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('user_id', userId);
+         await prefs.setString('user_Role', role);
 
          if (role == 'Customer') {
            Navigator.of(context).push(
